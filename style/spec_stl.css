@@ -1,0 +1,20 @@
+/*
+Специальная таблица стилей
+*/
+body{background-color:#161c23!important}
+#cat{color:#eef2f8}
+footer,nav{background:linear-gradient(0deg, #262f3b, #1f2731)!important;}
+footer .container {background-color:#262f3f}
+.pagination li.active {background-color:#6a7c91!important}
+.toolbar ul {background-color:#405063!important}
+.toolbar .btn-floating{background-color:#6a7c91!important}
+.toolbar .btn-floating:hover{background-color:#96a3b2!important}
+
+.collection-item p {padding-left:40px}
+
+.toolbar a:hover{background-color:#96a3b2!important}
+
+#action{background-color:#6a7c91!important}
+
+
+.modal.bottom-sheet {max-height:75%;}
