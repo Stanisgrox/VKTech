@@ -2,7 +2,6 @@
 /*
 Создал Stanisgrox (https://vk.com/psionicdog) для конкурса VK Tech, 28-08-2017.
 Версия PHP: 7.0
-VK AUTH: https://oauth.vk.com/authorize?client_id=6159077&redirect_uri=https://dev.orlandonetworks.ru/stanisgrox-vk-challenge/auth.php&response_type=token&scope=email&v=5.68
 */
 require_once('scripts/config.php');
 $db = mysqli_connect($db_host, $db_usr, $db_pass, $db_name);
@@ -136,8 +135,25 @@ $('#enter').on("click", function(){
 	});
 });
 </script>
+<script>
+function giveme(){
+	$.ajax({   
+		type: 'POST',
+		url: 'scripts/addmoney.php',
+		data: $('#addbalance').serialize()+'&'+$.param({'key': window.userdata.key}),
+		success: function (data){
+			console.log(data);
+			if(data == 'success'){sidemenu_change('');}
+		}
+	});
+}
+</script>
 		<script>
 			function modalchange(mtype){$.get('fragments/'+mtype+'-modal.php',function(data){document.getElementById('welc').innerHTML = data;})}
+			function sidemenu_change(menu){
+				if(!menu){$.get('fragments/sidemenu.php',function(data){document.getElementById('menu').innerHTML = data;})}
+				$.get('fragments/sidemenu'+menu+'.php',function(data){document.getElementById('menu').innerHTML = data;})}
+			
 			function postorder(){modalchange('post');$('#welc').modal('open');}
 			
 			document.addEventListener('DOMContentLoaded', ready());

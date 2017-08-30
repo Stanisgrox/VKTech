@@ -5,11 +5,11 @@
 		<form id="login-form">
 			<div class="row">
 				<div class="input-field col s12 m6 l4 offset-m3 offset-l4">
-					<input id="login" name="login" type="text" class="validate">
+					<input id="login" name="login" type="text" class="validate" required>
 					<label for="login">Логин</label>
 				</div>
 				<div class="input-field col s12 m6 l4 offset-m3 offset-l4">
-					<input id="password" name="password" type="password" class="validate">
+					<input id="password" name="password" type="password" class="validate" required>
 					<label for="password">Пароль</label>
 					Забыли пароль? <a href="#" id="getreg">Зарегистрироваться.</a>
 				</div>
