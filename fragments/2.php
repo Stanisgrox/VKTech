@@ -4,15 +4,15 @@
 	<div class="row">
 		<form class="col s12 l6 offset-l3" id="register">
 			<div class="input-field">
-				<input id="login" name="login" type="text" class="validate">
+				<input id="login" name="login" type="text" class="validate" required>
 				<label for="login">Логин</label>
 			</div>
 			<div class="input-field">
-				<input id="email" name="email" type="text" class="validate">
+				<input id="email" name="email" type="text" class="validate" required>
 				<label for="email">Email</label>
 			</div>
 			<div class="input-field">
-				<input id="password" name="password" type="password" class="validate">
+				<input id="password" name="password" type="password" class="validate" required>
 				<label for="password">Пароль</label>
 			</div>
 			<div class="input-field">
@@ -20,11 +20,11 @@
 				<label for="password-rept">Повторите пароль</label>
 			</div>
 			<div class="input-field">
-				<input id="name" name="name" type="text" class="validate">
+				<input id="name" name="name" type="text" class="validate" required>
 				<label for="name">Ваше имя</label>
 			</div>
 			<div class="input-field">
-				<input id="surname" name="surname" type="text" class="validate">
+				<input id="surname" name="surname" type="text" class="validate" required>
 				<label for="surname">Ваша фамилия</label>
 			</div>
 			<div class="input-field">
