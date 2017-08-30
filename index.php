@@ -38,19 +38,14 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 			<ul id="slide-out" class="side-nav">
 				<li><div class="user-view">
 					<div class="background"><img src="images/server-big.jpg"></div>
-					<a href="#!user" id="usr-ava"><?php if($usr['avatar']){echo '';}?></a>
-					<a href="#!name"><span class="white-text name" id="usr-login"><?php echo 'Анонимный пользователь';?></span></a>
-					<a href="#!email"><span class="white-text email" id="usr-email"></span></a>
+					<a href="#" id="usr-ava"><?php if($usr['avatar']){echo '';}?></a>
+					<a href="#"><span class="white-text name" id="usr-login"><?php echo 'Анонимный пользователь';?></span></a>
+					<a href="#"><span class="white-text email" id="usr-email"></span></a>
 					</div>
 				</li>
-				<!--
-				<li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-				<li><a href="#!">Second Link</a></li>
-				<li><div class="divider"></div></li>
-				<li><a class="subheader">Subheader</a></li>
-				<li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
-				-->
-				<li><a href="#welc" class="blue-text modal-trigger">Вход или регистрация</a></li>
+				<div id="menu">
+					<li><a href="#welc" class="blue-text modal-trigger">Вход или регистрация</a></li>
+				</div>
 			</ul>
 			<h4 class="center-align" id="cat">Новые проекты на сайте</h4>
 			<div class="container" id="list">
@@ -110,14 +105,14 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 		<div class="fixed-action-btn toolbar">
 			<a class="btn-floating btn-large"><i class="large material-icons">add</i></a>
 			<ul>
-				<li><a href="#">Фильтры</a></li>
-				<li><a href="#">Разместить заказ</a></li>
+				<li><a href="#" id="filters">Фильтры</a></li>
+				<li><a href="#" onclick="postorder()">Разместить заказ</a></li>
 			</ul>
 		</div>
 		<!-- END FAB -->
 		<!-- MODAL -->
 		<div id="welc" class="modal bottom-sheet">
-			<?php include('fragments/default-modal.html'); ?>
+			<?php include('fragments/default-modal.php'); ?>
 		</div>
 		<!-- END MODAL -->
 		<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -136,12 +131,14 @@ $('#enter').on("click", function(){
 			document.getElementById('usr-email').innerHTML = window.userdata.email;
 			document.getElementById('usr-ava').innerHTML = '<img class="circle" src="'+window.userdata.avatar+'">';
 			document.getElementById('welc').innerHTML = '';
+			$.get('fragments/sidemenu.php','login='+window.userdata.login,function(data){document.getElementById('menu').innerHTML = data;})
 		}
 	});
 });
 </script>
 		<script>
-			function defaultmodal(){$.get('fragments/default-modal.html',function(data){document.getElementById('welc').innerHTML = data;})}
+			function modalchange(mtype){$.get('fragments/'+mtype+'-modal.php',function(data){document.getElementById('welc').innerHTML = data;})}
+			function postorder(){modalchange('post');$('#welc').modal('open');}
 			
 			document.addEventListener('DOMContentLoaded', ready());
 			function ready(){

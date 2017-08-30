@@ -42,7 +42,7 @@
 		<form>
 	</div>
 	<div class="modal-footer">
-		<a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat" onclick="defaultmodal();">Отмена</a>
+		<a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat" onclick="modalchange('default');">Отмена</a>
 		<a href="#!" class="modal-action waves-effect waves-green btn-flat" onclick="proceed();">Завершить регистрацию</a>
 	</div>
 </div>
