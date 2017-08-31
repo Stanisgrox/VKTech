@@ -72,7 +72,7 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 					
 					$collection = mysqli_query($db,"SELECT * FROM `jobs` WHERE `done` = 0 ORDER BY `id` DESC LIMIT ".$onpage);
 					while($row = mysqli_fetch_assoc($collection)){
-						$uid = $row['id'];
+						$uid = $row['author'];
 						$publisher = mysqli_fetch_assoc(mysqli_query($db,"SELECT `id`,`login` FROM `users` WHERE `id` ='$uid'"));
 						$category = $specs[$row['category']];
 						
@@ -134,7 +134,43 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 		<!-- END MODAL -->
 		<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="js/materialize.min.js"></script>
+<script>
+//COOKIE API
+function getCookie(name) {
+	var matches = document.cookie.match(new RegExp(
+		"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+	));
+	return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+function setCookie(name, value, options) {
+  options = options || {}; var expires = options.expires;
+  if (typeof expires == "number" && expires) {
+    var d = new Date();
+    d.setTime(d.getTime() + expires * 1000);
+    expires = options.expires = d;
+  }
+  if (expires && expires.toUTCString) {
+    options.expires = expires.toUTCString();
+  }
+  value = encodeURIComponent(value);
+  var updatedCookie = name + "=" + value;
+  for (var propName in options) {
+    updatedCookie += "; " + propName;
+    var propValue = options[propName];
+    if (propValue !== true) {
+      updatedCookie += "=" + propValue;
+    }
+  }
+  document.cookie = updatedCookie;
+}
+</script>
 <script id="ent-script">
+function getlist(count){
+	setCookie('onpage', count, 'expires:36000');
+	if(!window.userdata.categories){window.userdata.categories = ' ';}
+	$.get('fragments/general.php','cats='+window.userdata.categories+'&onpage='+getCookie('onpage'),function(data){document.getElementById('list').innerHTML = data;})
+}
 //LOGIN CLIENT
 $('#enter').on("click", function(){
 	$.ajax({   
@@ -156,37 +192,30 @@ $('#enter').on("click", function(){
 			document.body.insertBefore(sidenavscript, ent);
 			//RIGHTS CHECK
 			if(window.userdata.post){document.getElementById("toolbar").innerHTML += '<li><a href="#" onclick="postorder()">Разместить заказ</a></li>';}
-			$.get('fragments/general.php','cats='+window.userdata.categories,function(data){document.getElementById('list').innerHTML = data; console.log(data);})
+			$.get('fragments/general.php','cats='+window.userdata.categories+'&onpage='+getCookie('onpage'),function(data){document.getElementById('list').innerHTML = data;})
 			//COOKIE SETUP
 			
 		}
 	});
 });
-</script>
-<script>
+function readyorder(){
+	$.ajax({   
+		type: 'POST',
+		url: 'scripts/order_handler.php',
+		data: $('#anket').serialize()+'&'+$.param({'key': window.userdata.key}),
+		success: function (data){
+			console.log(data);
+			$.get('fragments/general.php','cats='+window.userdata.categories+'&onpage='+getCookie('onpage'),function(data){document.getElementById('list').innerHTML = data;})
+			}
+});
+}
+function working(id){
+	$.get('scripts/working.php','work='+id+'&key='+window.userdata.key,function(data){console.log(data);});
+	$.get('fragments/general.php','cats='+window.userdata.categories+'&onpage='+getCookie('onpage'),function(data){document.getElementById('list').innerHTML = data;})
+}
+
 	function modalchange(mtype){$.get('fragments/'+mtype+'-modal.php',function(data){document.getElementById('welc').innerHTML = data;})}
-	function postorder(){
-		modalchange('post');
-		$('#welc').modal('open');
-		$('select').material_select();
-		$('.datepicker').pickadate({
-			selectMonths: true,
-			selectYears: 2, 
-			today: 'Сегодня',
-			clear: 'Отчистить',
-			close: 'ОК',
-			closeOnSelect: false
-		});
-		$('.timepicker').pickatime({
-			default: 'now',
-			fromnow: 0,	
-			twelvehour: false,
-			donetext: 'OK',
-			cleartext: 'Отчистить',
-			canceltext: 'Отмена', 
-			autoclose: false
-		});}
-		
+	function postorder(){modalchange('post');$('#welc').modal('open');}		
 	document.addEventListener('DOMContentLoaded', ready());
 	function ready(){
 		$("#mnu").sideNav();

@@ -6,6 +6,9 @@ mysqli_set_charset($db,'utf8');
 
 $categories = explode('pl',$_GET['cats']);
 $onpage = 5;
+if($_GET['onpage']){$onpage = $_GET['onpage'];}
+if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции
+
 function dating($date){
 	$datetime = explode(' ',$date);
 	$datef = explode('-',$datetime[0]);
@@ -26,7 +29,7 @@ function dating($date){
 	return intval($datef[2]).' '.$month.' '.$datef[0].' в '.$datet[0].':'.$datet[1];}
 $collection = mysqli_query($db,"SELECT * FROM `jobs` WHERE `done` = 0 ORDER BY `id` DESC LIMIT ".$onpage);
 while($row = mysqli_fetch_assoc($collection)){
-	$uid = $row['id'];
+	$uid = $row['author'];
 	$publisher = mysqli_fetch_assoc(mysqli_query($db,"SELECT `id`,`login` FROM `users` WHERE `id` ='$uid'"));
 	$category = $specs[$row['category']];
 	
@@ -37,6 +40,6 @@ while($row = mysqli_fetch_assoc($collection)){
 		echo '<b>Бюджет:</b> '.$row['price'].' рублей <br>';
 		echo '<b>Опубликовал:</b> '.$publisher['login'].', '; echo(dating($row['date']));echo'<br>';
 		echo '<b>До:</b> '; echo(dating($row['till']));echo'<br>';
-		if(array_search($row['category'],$categories)){echo '<a href="#!" class="secondary-content"><i class="material-icons">Выполнить</i></a>';}
+		if(array_search($row['category'],$categories)){echo '<a href="#!" onclick="working('.$row['id'].');" class="secondary-content"><i class="material-icons">Выполнить</i></a>';}
 	echo '</li>';}
 ?>

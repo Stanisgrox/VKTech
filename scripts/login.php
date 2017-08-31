@@ -22,6 +22,7 @@ if(password_verify($password,$usr['password'])){
 	if(array_search('1000',$rights)||array_search('1000',$rights) == 0){$post = 'true';} else {$post = 'false';}
 	echo '{"key":"'.$key.'","login":"'.$login.'","email":"'.$usr['email'].'","avatar":"'.$info['photo_200'].'","post":'.$post.',"categories":"'.$usr['category'].'"}';
 	$id = $usr['id'];
+	mysqli_query($db,"UPDATE `keys` SET `actual`='0' WHERE `id`='$id'");
 	mysqli_query($db,"INSERT INTO `keys` (`id`,`key`,`loggedat`) VALUES ('$id','$key','$now')");
 
 }
