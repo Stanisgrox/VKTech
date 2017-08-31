@@ -47,8 +47,8 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 				</div>
 			</ul>
 			<h4 class="center-align" id="cat">Новые проекты на сайте</h4>
-			<div class="container" id="list">
-				<ul class="collection">
+			<div class="container">
+				<ul class="collection" id="list">
 					<?php
 					function dating($date){
 						$datetime = explode(' ',$date);
@@ -70,13 +70,13 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 						return intval($datef[2]).' '.$month.' '.$datef[0].' в '.$datet[0].':'.$datet[1];						
 					}
 					
-					$collection = mysqli_query($db,"SELECT * FROM `jobs` ORDER BY `id` DESC LIMIT ".$onpage);
+					$collection = mysqli_query($db,"SELECT * FROM `jobs` WHERE `done` = 0 ORDER BY `id` DESC LIMIT ".$onpage);
 					while($row = mysqli_fetch_assoc($collection)){
 						$uid = $row['id'];
 						$publisher = mysqli_fetch_assoc(mysqli_query($db,"SELECT `id`,`login` FROM `users` WHERE `id` ='$uid'"));
 						$category = $specs[$row['category']];
 						
-						echo '<li class="collection-item avatar works">';
+						echo '<li class="collection-item avatar works '.$row['category'].'">';
 							echo '<img src="images/server-big.jpg" alt="" class="circle">';
 							echo '<span class="title"><b>'.$row['title'].'</b></span>';
 							echo '<p><b>Категория:</b> '.$category.'<br>';
@@ -89,10 +89,10 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 			</div>
 			
 			<span class="white-text">Количество элементов: 
-			<a class="onpg" data-value="5">5</a>
-			<a class="onpg" data-value="10">10</a> 
-			<a class="onpg" data-value="30">30</a> 
-			<a class="onpg" data-value="50">50</a></span>
+			<a href="#" onclick="getlist(5);">5</a>
+			<a href="#" onclick="getlist(10);">10</a> 
+			<a href="#" onclick="getlist(30);">30</a> 
+			<a href="#" onclick="getlist(50);">50</a></span>
 			
 			<ul class="pagination center-align">
 				<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
@@ -124,7 +124,6 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 			<a class="btn-floating btn-large"><i class="large material-icons">add</i></a>
 			<ul id="toolbar">
 				<li><a href="#" id="filters">Фильтры</a></li>
-				<li><a href="#" onclick="postorder()">Разместить заказ</a></li>
 			</ul>
 		</div>
 		<!-- END FAB -->
@@ -150,42 +149,53 @@ $('#enter').on("click", function(){
 			document.getElementById('usr-ava').innerHTML = '<img class="circle" src="'+window.userdata.avatar+'">';
 			document.getElementById('welc').innerHTML = '';
 			$.get('fragments/sidemenu.php','login='+window.userdata.login,function(data){document.getElementById('menu').innerHTML = data;})
-			var star = '<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>';
+			//AJAX SCRIPT
+			var sidenavscript = document.createElement("script");
+			sidenavscript.src = "js/sidenav-scripts.js";
+			var ent = document.getElementById("ent-script");
+			document.body.insertBefore(sidenavscript, ent);
+			//RIGHTS CHECK
+			if(window.userdata.post){document.getElementById("toolbar").innerHTML += '<li><a href="#" onclick="postorder()">Разместить заказ</a></li>';}
+			$.get('fragments/general.php','cats='+window.userdata.categories,function(data){document.getElementById('list').innerHTML = data; console.log(data);})
+			//COOKIE SETUP
+			
 		}
 	});
 });
 </script>
 <script>
-function giveme(){
-	$.ajax({   
-		type: 'POST',
-		url: 'scripts/addmoney.php',
-		data: $('#addbalance').serialize()+'&'+$.param({'key': window.userdata.key}),
-		success: function (data){
-			console.log(data);
-			if(data == 'success'){sidemenu_change('');}
-		}
-	});
-}
+	function modalchange(mtype){$.get('fragments/'+mtype+'-modal.php',function(data){document.getElementById('welc').innerHTML = data;})}
+	function postorder(){
+		modalchange('post');
+		$('#welc').modal('open');
+		$('select').material_select();
+		$('.datepicker').pickadate({
+			selectMonths: true,
+			selectYears: 2, 
+			today: 'Сегодня',
+			clear: 'Отчистить',
+			close: 'ОК',
+			closeOnSelect: false
+		});
+		$('.timepicker').pickatime({
+			default: 'now',
+			fromnow: 0,	
+			twelvehour: false,
+			donetext: 'OK',
+			cleartext: 'Отчистить',
+			canceltext: 'Отмена', 
+			autoclose: false
+		});}
+		
+	document.addEventListener('DOMContentLoaded', ready());
+	function ready(){
+		$("#mnu").sideNav();
+		$('.modal').modal({opacity: .7});
+		$('#welc').modal('open');
+		$('#getreg').on("click",function(){
+			$.get('fragments/reg.php','stage=1',function(data){$('#welc').html(data);$('#ent-script').html = '';});	
+		});
+	}
 </script>
-
-		<script>
-			function modalchange(mtype){$.get('fragments/'+mtype+'-modal.php',function(data){document.getElementById('welc').innerHTML = data;})}
-			function sidemenu_change(menu){
-				if(!menu){$.get('fragments/sidemenu.php',function(data){document.getElementById('menu').innerHTML = data;})}
-				$.get('fragments/sidemenu'+menu+'.php',function(data){document.getElementById('menu').innerHTML = data;})}
-			
-			function postorder(){modalchange('post');$('#welc').modal('open');}
-			
-			document.addEventListener('DOMContentLoaded', ready());
-			function ready(){
-				$("#mnu").sideNav();
-				$('.modal').modal({opacity: .7});
-				$('#welc').modal('open');
-				$('#getreg').on("click",function(){
-					$.get('fragments/reg.php','stage=1',function(data){$('#welc').html(data);$('#ent-script').html = '';});	
-				});
-			}
-		</script>
 	</body>
 </html>

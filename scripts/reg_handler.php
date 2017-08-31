@@ -15,7 +15,7 @@ if($_POST){
 	$email = mysqli_real_escape_string($db,$_POST['email']);
 	$datereg = date('Y-m-d H:i:s');	
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)){exit ('5');} // 5 - неверный формат email
-	foreach($_POST['spec'] as $val){$cat = $cat.$val.'&&';}
+	foreach($_POST['spec'] as $val){$cat = $cat.$val.'pl';}
 	$query = "INSERT INTO `users` (`login`,`password`,`name`,`surname`,`email`,`category`,`datereg`,`group`)
 	VALUES ('$login','$password','$name','$surname','$email','$cat','$datereg','usr')";
 

@@ -15,7 +15,7 @@
 					<input name="todate" type="text" class="datepicker">
 				</div>
 				<div class="input-field">
-					<input name="totime" type="text" class="timepicker">
+					<input name="totime" type="text" class="timepicker" onclick="fx();">
 				</div>
 				<div class="input-field">
 					<select name="category">
@@ -36,25 +36,3 @@
 		<a href="#!" id="enter" class="modal-action modal-close waves-effect waves-green btn-flat">Разместить заказ</a>
 	</div>
 </div>
-<script>
-$(document).ready(function(){
-	$('select').material_select();
-	$('.datepicker').pickadate({
-		selectMonths: true,
-		selectYears: 2, 
-		today: 'Сегодня',
-		clear: 'Отчистить',
-		close: 'ОК',
-		closeOnSelect: false
-	});
-	$('.timepicker').pickatime({
-		default: 'now',
-		fromnow: 0,
-		twelvehour: false,
-		donetext: 'OK',
-		cleartext: 'Отчистить',
-		canceltext: 'Отмена', 
-		autoclose: false
-  });
-});
-</script>
