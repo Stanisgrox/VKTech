@@ -53,7 +53,21 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 					function dating($date){
 						$datetime = explode(' ',$date);
 						$datef = explode('-',$datetime[0]);
-						return $datef[2].' августа '.$datef[0].' в 20:00';						
+						$datet = explode(':',$datetime[1]);
+						switch ($datef[1]){
+							case '01':$month = "января";break;
+							case '02':$month = "февраля";break;
+							case '03':$month = "марта";break;
+							case '04':$month = "апреля";break;
+							case '05':$month = "мая";break;
+							case '06':$month = "июня";break;
+							case '07':$month = "июля";break;
+							case '08':$month = "августа";break;
+							case '09':$month = "сентября";break;
+							case '10':$month = "октября";break;
+							case '11':$month = "ноября";break;
+							case '12':$month = "декабря";break;}
+						return intval($datef[2]).' '.$month.' '.$datef[0].' в '.$datet[0].':'.$datet[1];						
 					}
 					
 					$collection = mysqli_query($db,"SELECT * FROM `jobs` ORDER BY `id` DESC LIMIT ".$onpage);
@@ -67,9 +81,8 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 							echo '<span class="title"><b>'.$row['title'].'</b></span>';
 							echo '<p><b>Категория:</b> '.$category.'<br>';
 							echo '<b>Бюджет:</b> '.$row['price'].' рублей <br>';
-							echo '<b>Осталось времени:</b> 10 лет<br>';
 							echo '<b>Опубликовал:</b> '.$publisher['login'].', '; echo(dating($row['date']));echo'<br>';
-							echo '<b>Рейтинг:</b> <span class="green-text">+9001</span></p>';
+							echo '<b>До:</b> '; echo(dating($row['till']));echo'<br>';
 						echo '</li>';}
 						?>
 				</ul>
@@ -109,7 +122,7 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 		<!-- FAB -->
 		<div class="fixed-action-btn toolbar">
 			<a class="btn-floating btn-large"><i class="large material-icons">add</i></a>
-			<ul>
+			<ul id="toolbar">
 				<li><a href="#" id="filters">Фильтры</a></li>
 				<li><a href="#" onclick="postorder()">Разместить заказ</a></li>
 			</ul>
