@@ -50,20 +50,26 @@ if(!is_int($onpage)){$onpage = 5;} //Защита от SQL инъекции че
 			<div class="container" id="list">
 				<ul class="collection">
 					<?php
+					function dating($date){
+						$datetime = explode(' ',$date);
+						$datef = explode('-',$datetime[0]);
+						return $datef[2].' августа '.$datef[0].' в 20:00';						
+					}
 					
-					$collection = mysqli_query($db,"SELECT * FROM `jobs` ORDER BY `id` ASC LIMIT ".$onpage);
+					$collection = mysqli_query($db,"SELECT * FROM `jobs` ORDER BY `id` DESC LIMIT ".$onpage);
 					while($row = mysqli_fetch_assoc($collection)){
 						$uid = $row['id'];
 						$publisher = mysqli_fetch_assoc(mysqli_query($db,"SELECT `id`,`login` FROM `users` WHERE `id` ='$uid'"));
-						echo '<li class="collection-item avatar">';
+						$category = $specs[$row['category']];
+						
+						echo '<li class="collection-item avatar works">';
 							echo '<img src="images/server-big.jpg" alt="" class="circle">';
 							echo '<span class="title"><b>'.$row['title'].'</b></span>';
-							echo '<p><b>Категория:</b> бытовая техника<br>';
+							echo '<p><b>Категория:</b> '.$category.'<br>';
 							echo '<b>Бюджет:</b> '.$row['price'].' рублей <br>';
 							echo '<b>Осталось времени:</b> 10 лет<br>';
-							echo '<b>Опубликовал:</b> '.$publisher['login'].', 23 августа в 20:22<br>';
+							echo '<b>Опубликовал:</b> '.$publisher['login'].', '; echo(dating($row['date']));echo'<br>';
 							echo '<b>Рейтинг:</b> <span class="green-text">+9001</span></p>';
-							echo '<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>';
 						echo '</li>';}
 						?>
 				</ul>
@@ -131,6 +137,7 @@ $('#enter').on("click", function(){
 			document.getElementById('usr-ava').innerHTML = '<img class="circle" src="'+window.userdata.avatar+'">';
 			document.getElementById('welc').innerHTML = '';
 			$.get('fragments/sidemenu.php','login='+window.userdata.login,function(data){document.getElementById('menu').innerHTML = data;})
+			var star = '<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>';
 		}
 	});
 });
@@ -148,6 +155,7 @@ function giveme(){
 	});
 }
 </script>
+
 		<script>
 			function modalchange(mtype){$.get('fragments/'+mtype+'-modal.php',function(data){document.getElementById('welc').innerHTML = data;})}
 			function sidemenu_change(menu){
